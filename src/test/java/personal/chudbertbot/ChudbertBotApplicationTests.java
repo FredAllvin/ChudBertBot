@@ -15,14 +15,15 @@ import org.springframework.test.context.TestPropertySource;
         "twitch.oauth-token=fake_token_for_test",
         "twitch.client-id=fake_client_id",
         "twitch.client-secret=fake_client_secret",
-        "twitch.channels="
+        "twitch.channels=",
+        // OAuth2 client registration needs its own properties (different prefix from TwitchProperties)
+        "spring.security.oauth2.client.registration.twitch.client-id=fake_client_id",
+        "spring.security.oauth2.client.registration.twitch.client-secret=fake_client_secret"
 })
 class ChudbertBotApplicationTests {
 
     @TestConfiguration
     static class TestConfig {
-        // Overrides BotConfiguration.twitchClient() with a deep-stub mock so
-        // the context loads without attempting a real Twitch connection.
         @Bean
         TwitchClient twitchClient() {
             return Mockito.mock(TwitchClient.class, Mockito.RETURNS_DEEP_STUBS);

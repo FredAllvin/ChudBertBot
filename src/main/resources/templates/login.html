@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChudBertBot — Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0e0e10] min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-[#1f1f23] rounded-2xl p-10 flex flex-col items-center gap-8 shadow-2xl w-full max-w-sm border border-[#2a2a35]">
+
+        <!-- Branding -->
+        <div class="flex flex-col items-center gap-3">
+            <div class="w-16 h-16 bg-[#9147ff] rounded-2xl flex items-center justify-center shadow-lg shadow-[#9147ff]/30">
+                <svg class="w-9 h-9 text-white" viewBox="0 0 512 512" fill="currentColor">
+                    <path d="M391.17,103.47H352.54v109.7h38.63ZM285,103H246.37V212.75H285ZM120.33,0,24.86,91.45V420.56H140.14V512l95.51-91.44h76.69L487.14,256V0ZM449.07,237.75l-76.69,73.17H295.7L210.29,395V310.92H132.77V36.58H449.07Z"/>
+                </svg>
+            </div>
+            <div class="text-center">
+                <h1 class="text-white text-2xl font-bold tracking-tight">ChudBertBot</h1>
+                <p class="text-[#adadb8] text-sm mt-1">Dashboard</p>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${param.error}" class="w-full bg-red-950/60 border border-red-800/50 text-red-300 text-sm px-4 py-3 rounded-lg text-center">
+            Authentication failed — please try again.
+        </div>
+        <div th:if="${param.logout}" class="w-full bg-[#2a2a35] text-[#adadb8] text-sm px-4 py-3 rounded-lg text-center">
+            You have been signed out.
+        </div>
+
+        <!-- Sign in -->
+        <div class="w-full flex flex-col gap-3">
+            <a th:href="@{/oauth2/authorization/twitch}"
+               class="w-full bg-[#9147ff] hover:bg-[#772ce8] active:bg-[#5c16c5] text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-3 transition-colors duration-150 shadow-md">
+                <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 512 512" fill="currentColor">
+                    <path d="M391.17,103.47H352.54v109.7h38.63ZM285,103H246.37V212.75H285ZM120.33,0,24.86,91.45V420.56H140.14V512l95.51-91.44h76.69L487.14,256V0ZM449.07,237.75l-76.69,73.17H295.7L210.29,395V310.92H132.77V36.58H449.07Z"/>
+                </svg>
+                Sign in with Twitch
+            </a>
+            <p class="text-[#6b6b7a] text-xs text-center">
+                Only you can access this dashboard.
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
