@@ -10,14 +10,14 @@ import personal.chudbertbot.exception.MessageGuardException;
 /**
  * Safe message sender for all bot commands.
  *
- * Every outgoing message passes through ChatGuard before being sent.
+ * Every outgoing message passes through the full safety stack before being sent:
+ *   1. Blank / null check
+ *   2. 500-character truncation (Twitch hard limit)
+ *   3. ChatGuard    — emoji count (≤30) and @mention count (≤1)
+ *   4. BanphraseClient — pajbot banphrase check
+ *
  * CommandHandler implementations MUST use this service — never call
  * twitchClient.getChat().sendMessage() directly.
- *
- * Enforces:
- *   - Twitch's 500-character message limit (truncates with "...")
- *   - Max 30 emojis (channel rule)
- *   - Max 1 @mention (mass ping prevention)
  */
 @Service
 public class BotChatService {
@@ -27,10 +27,14 @@ public class BotChatService {
 
     private final TwitchClient twitchClient;
     private final ChatGuard chatGuard;
+    private final BanphraseClient banphraseClient;
 
-    public BotChatService(TwitchClient twitchClient, ChatGuard chatGuard) {
+    public BotChatService(TwitchClient twitchClient,
+                          ChatGuard chatGuard,
+                          BanphraseClient banphraseClient) {
         this.twitchClient = twitchClient;
         this.chatGuard = chatGuard;
+        this.banphraseClient = banphraseClient;
     }
 
     /** Convenience overload — sends to the same channel as the triggering event. */
@@ -40,7 +44,7 @@ public class BotChatService {
 
     /**
      * Validates and sends a message to the specified channel.
-     * Silently drops the message (with a WARN log) if it fails any guard check.
+     * Silently drops the message (with a WARN log) if it fails any check.
      */
     public void sendMessage(String channel, String message) {
         if (message == null || message.isBlank()) return;
@@ -53,6 +57,11 @@ public class BotChatService {
             chatGuard.validate(truncated);
         } catch (MessageGuardException e) {
             log.warn("Message to #{} dropped by guard: {}", channel, e.getMessage());
+            return;
+        }
+
+        if (!banphraseClient.isSafe(truncated)) {
+            log.warn("Message to #{} dropped by banphrase check", channel);
             return;
         }
 

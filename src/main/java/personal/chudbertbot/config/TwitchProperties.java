@@ -13,5 +13,10 @@ public record TwitchProperties(
         @NotBlank String oauthToken,
         @NotBlank String clientId,
         @NotBlank String clientSecret,
-        List<String> channels
+        List<String> channels,
+        // Optional: URL of the channel's own pajbot instance (e.g. https://nymn.pajbot.com).
+        // Takes priority over streamerId if both are set.
+        String pajbotUrl,
+        // Optional: Twitch user ID of the streamer, used with paj.pajbot.com when pajbotUrl is absent.
+        String streamerId
 ) {}
