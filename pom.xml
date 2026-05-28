@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <twitch4j.version>1.25.0</twitch4j.version>
+        <twitch4j.version>1.26.0</twitch4j.version>
     </properties>
     <dependencies>
         <dependency>
